@@ -8,4 +8,8 @@ abstract class Base_Form
 
     }
 
+    public function meta()
+    {
+
+    }
 }
