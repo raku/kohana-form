@@ -6,6 +6,7 @@
  * Time: 17:10
  */
 
-class Widget {
+class Widget extends Base_Widget
+{
 
-} 
+}

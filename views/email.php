@@ -1,0 +1,1 @@
+<input type="email" name="<?php echo $name; ?>" value="<?php echo $value; ?>"/>

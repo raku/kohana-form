@@ -3,8 +3,5 @@
 
 class Field extends Base_Field
 {
-    public static function factory($type)
-    {
-        return 0;
-    }
+
 }
