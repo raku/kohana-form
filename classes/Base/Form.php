@@ -6,6 +6,8 @@ abstract class Base_Form implements Iterator
 
     private $__elements = array();
 
+    private $__position = 0;
+
     public static function factory($classname)
     {
         $class = "Form_" . $classname;
@@ -15,36 +17,39 @@ abstract class Base_Form implements Iterator
 
     public function __construct()
     {
-
+        $klass = get_called_class();
+        foreach ($klass::meta() as $name => $field) {
+            $this->__elements[] = $field->name($name);
+        }
     }
 
-    public function meta()
+    public static function meta()
     {
         return array();
     }
 
     public function current()
     {
-        // TODO: Implement current() method.
+        return $this->__elements[$this->__position];
     }
 
     public function next()
     {
-        // TODO: Implement next() method.
+        ++$this->__position;
     }
 
     public function key()
     {
-        // TODO: Implement key() method.
+        return $this->__position;
     }
 
     public function valid()
     {
-        // TODO: Implement valid() method.
+        return isset($this->__elements[$this->__position]);
     }
 
     public function rewind()
     {
-        // TODO: Implement rewind() method.
+        $this->__position = 0;
     }
 }

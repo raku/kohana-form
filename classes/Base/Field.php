@@ -11,7 +11,7 @@ abstract class Base_Field
 
     protected $_options = array();
 
-    public static function factory($type, $options = NULL)
+    public static function factory($type, $options = array())
     {
         $class = "Field_" . $type;
 
@@ -48,7 +48,7 @@ abstract class Base_Field
         if ($type === NULL)
             return Widget::factory($this->_widget, array(
                 "value" => $this->value(),
-                "name" => "name"
+                "name" => $this->name()
             ));
 
         $this->_widget = $type;
