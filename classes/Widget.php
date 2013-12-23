@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: roman
- * Date: 19.12.13
- * Time: 17:10
- */
+defined('SYSPATH') or die('No direct script access.');
 
 class Widget extends Base_Widget
 {

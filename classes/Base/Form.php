@@ -23,6 +23,27 @@ abstract class Base_Form implements Iterator
         }
     }
 
+    public function name()
+    {
+        return strtolower(str_replace("Form_", "", get_called_class()));
+    }
+
+    public function render()
+    {
+        $result = "";
+
+        foreach ($this as $field) {
+            $result .= $field;
+        }
+
+        return $result;
+    }
+
+    public function __toString()
+    {
+        return $this->render();
+    }
+
     public static function meta()
     {
         return array();
