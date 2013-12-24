@@ -4,24 +4,33 @@
 abstract class Base_Form implements Iterator
 {
 
-    private $__elements = array();
+    protected $_elements = array();
 
     private $__position = 0;
 
-    public static function factory($classname)
+    public static function factory($classname, $data = NULL)
     {
         $class = "Form_" . $classname;
 
-        return new $class();
+        return new $class($data);
     }
 
-    public function __construct()
+    public function __construct($data = NULL)
     {
         $klass = get_called_class();
-        foreach ($klass::meta() as $name => $field) {
+
+        $meta = $klass::meta();
+
+        foreach ($meta as $name => $field) {
+            if ($data !== NULL) {
+                if (isset($data[$name])) {
+                    $field->value($data[$name]);
+                }
+            }
             $this->__elements[] = $field->name($name);
         }
     }
+
 
     public function name()
     {
