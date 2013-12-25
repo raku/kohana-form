@@ -15,14 +15,22 @@ class Base_ORM_Form extends Base_Form
 
             $name = $column["column_name"];
 
-            if (in_array($name, $meta["display_fields"]))
-                $this->__elements[] = Field::factory(
-                    Inflector::underscore(
-                        ucwords(
-                            $column["data_type"]
-                        )))
-                    ->name($column["column_name"])
-                    ->value(isset($data[$name]) ? $data[$name] : "");
+            if (in_array($name, $meta["display_fields"])) {
+
+                $this->__elements[] =
+                    Field::factory($this->__transform_value($column["data_type"]))
+                        ->name($column["column_name"])
+                        ->value(isset($data[$name]) ? $data[$name] : "");
+
+            }
         }
+    }
+
+    private function __transform_value($value)
+    {
+        return Inflector::underscore(
+            ucwords(
+                $value
+            ));
     }
 }
