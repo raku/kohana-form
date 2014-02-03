@@ -3,25 +3,41 @@
 
 class Base_ORM_Form extends Base_Form
 {
-    public function __construct($data = NULL)
+    private $__instance = NULL;
+    private $__meta = array(
+        "model" => NULL,
+        "display_fields" => array()
+    );
+
+    public function __construct($data = array(), $id = NULL)
     {
         $klass = get_called_class();
 
-        $meta = $klass::meta();
+        $this->__meta = Arr::merge($this->__meta, $klass::meta());
 
-        $columns = $meta["model"]->list_columns();
+        $columns = $this->__meta["model"]->list_columns();
 
-        foreach ($columns as $column) {
+        if ($id !== NULL)
+        {
+            $this->__instance = $this->__meta["model"]->where($this->__meta["model"]->primary_key(), "=", $id)->find();
+            $iterated = array();
 
+            foreach ($this->__instance->as_array() as $key => $value)
+            {
+                $iterated[$key] = $value;
+            }
+            $data = Arr::merge($iterated, $data);
+        }
+
+        foreach ($columns as $column)
+        {
             $name = $column["column_name"];
 
-            if (in_array($name, $meta["display_fields"])) {
-
-                $this->__elements[] =
-                    Field::factory($this->__transform_value($column["data_type"]))
-                        ->name($column["column_name"])
-                        ->value(isset($data[$name]) ? $data[$name] : "");
-
+            if (in_array($name, $this->__meta["display_fields"]) || empty($this->__meta["display_fields"]))
+            {
+                $this->__elements[] = Field::factory($this->__transform_value($column["data_type"]))
+                    ->name($column["column_name"])
+                    ->value(isset($data[$name]) ? $data[$name] : "");
             }
         }
     }
@@ -32,5 +48,18 @@ class Base_ORM_Form extends Base_Form
             ucwords(
                 $value
             ));
+    }
+
+    public function save()
+    {
+        if ($this->__instance === NULL)
+            $this->__instance = $this->__meta["model"];
+
+        foreach ($this->__elements as $element)
+        {
+            $this->__instance->{$element->name()} = $element->value();
+        }
+
+        $this->__instance->save();
     }
 }

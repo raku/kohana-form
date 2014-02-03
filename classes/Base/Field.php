@@ -10,6 +10,8 @@ abstract class Base_Field
 
     protected $_name = "";
 
+    protected $_rules = array();
+
     protected $_options = array();
 
     public static function factory($type, $options = array())
@@ -55,6 +57,15 @@ abstract class Base_Field
         $this->_widget = $type;
 
         return $this;
+    }
+
+    public function valid()
+    {
+        $validation = Validation::factory(array(
+            $this->name() => $this->value()
+        ));
+
+
     }
 
     public function render()

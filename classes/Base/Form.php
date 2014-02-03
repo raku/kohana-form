@@ -4,33 +4,56 @@
 abstract class Base_Form implements Iterator
 {
 
-    protected $_elements = array();
+    protected $__elements = array();
 
     private $__position = 0;
 
-    public static function factory($classname, $data = NULL)
+    public static function factory($classname, $data = NULL, $id = NULL)
     {
         $class = "Form_" . $classname;
 
-        return new $class($data);
+        return new $class($data, $id);
     }
 
-    public function __construct($data = NULL)
+    public function __construct($data = NULL, $id = NULL)
     {
         $klass = get_called_class();
 
         $meta = $klass::meta();
 
-        foreach ($meta as $name => $field) {
-            if ($data !== NULL) {
-                if (isset($data[$name])) {
+        foreach ($meta as $name => $field)
+        {
+
+            if ($data !== NULL)
+            {
+                if (isset($data[$name]))
+                {
                     $field->value($data[$name]);
                 }
             }
+
             $this->__elements[] = $field->name($name);
         }
     }
 
+    public function validate()
+    {
+
+        foreach ($this->__elements as $element)
+        {
+            if (!$element->valid())
+            {
+                $this->__errors[$element->name()] = $element->errors();
+            }
+        }
+
+        return empty($this->__errors);
+    }
+
+    public function errors()
+    {
+        return $this->__errors;
+    }
 
     public function name()
     {
@@ -41,7 +64,8 @@ abstract class Base_Form implements Iterator
     {
         $result = "";
 
-        foreach ($this as $field) {
+        foreach ($this as $field)
+        {
             $result .= $field;
         }
 
