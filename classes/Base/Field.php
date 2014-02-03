@@ -59,7 +59,7 @@ abstract class Base_Field
         return $this;
     }
 
-    public function valid()
+    public function valid() // ещё не доделано
     {
         $validation = Validation::factory(array(
             $this->name() => $this->value()
