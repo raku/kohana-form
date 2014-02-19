@@ -3,4 +3,5 @@
 </label>
 
 
-<textarea name="<?php echo $name ?>" id="<?php echo $name ?>" cols="30" rows="10"><?php echo $value ?></textarea>
+<textarea name="<?php echo $name ?>" class="<?php echo implode(" ", $css_classes) ?>" id="<?php echo $name ?>" cols="30"
+          rows="10"><?php echo $value ?></textarea>
