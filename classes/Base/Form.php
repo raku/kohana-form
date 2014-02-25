@@ -4,9 +4,12 @@
 abstract class Base_Form implements Iterator
 {
 
-    protected $__elements = array();
+    private $__elements = array();
 
     private $__position = 0;
+    private $__errors = array();
+    protected $_valid_messages_file = "";
+
 
     public static function factory($classname, $data = NULL, $id = NULL)
     {
@@ -15,19 +18,21 @@ abstract class Base_Form implements Iterator
         return new $class($data, $id);
     }
 
+    protected function elements()
+    {
+        return $this->__elements;
+    }
+
     public function __construct($data = NULL, $id = NULL)
     {
         $klass = get_called_class();
 
         $meta = $klass::meta();
 
-        foreach ($meta as $name => $field)
-        {
+        foreach ($meta as $name => $field) {
 
-            if ($data !== NULL)
-            {
-                if (isset($data[$name]))
-                {
+            if ($data !== NULL) {
+                if (isset($data[$name])) {
                     $field->value($data[$name]);
                 }
             }
@@ -39,11 +44,9 @@ abstract class Base_Form implements Iterator
     public function validate()
     {
 
-        foreach ($this->__elements as $element)
-        {
-            if (!$element->valid())
-            {
-                $this->__errors[$element->name()] = $element->errors();
+        foreach ($this->__elements as $element) {
+            if (!$element->valid($this->_valid_messages_file)) {
+                $this->__errors = Arr::merge($this->__errors, $element->errors());
             }
         }
 
@@ -60,12 +63,16 @@ abstract class Base_Form implements Iterator
         return strtolower(str_replace("Form_", "", get_called_class()));
     }
 
+    public function add_field(Base_Field $field)
+    {
+        $this->__elements[] = $field;
+    }
+
     public function render()
     {
         $result = "";
 
-        foreach ($this as $field)
-        {
+        foreach ($this as $field) {
             $result .= $field;
         }
 

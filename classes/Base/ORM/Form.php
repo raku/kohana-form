@@ -17,27 +17,23 @@ class Base_ORM_Form extends Base_Form
 
         $columns = $this->__meta["model"]->list_columns();
 
-        if ($id !== NULL)
-        {
+        if ($id !== NULL) {
             $this->__instance = $this->__meta["model"]->where($this->__meta["model"]->primary_key(), "=", $id)->find();
             $iterated = array();
 
-            foreach ($this->__instance->as_array() as $key => $value)
-            {
+            foreach ($this->__instance->as_array() as $key => $value) {
                 $iterated[$key] = $value;
             }
             $data = Arr::merge($iterated, $data);
         }
 
-        foreach ($columns as $column)
-        {
+        foreach ($columns as $column) {
             $name = $column["column_name"];
 
-            if (in_array($name, $this->__meta["display_fields"]) || empty($this->__meta["display_fields"]))
-            {
-                $this->__elements[] = Field::factory($this->__transform_value($column["data_type"]))
+            if (in_array($name, $this->__meta["display_fields"]) || empty($this->__meta["display_fields"])) {
+                $this->add_field(Field::factory($this->__transform_value($column["data_type"]))
                     ->name($column["column_name"])
-                    ->value(isset($data[$name]) ? $data[$name] : "");
+                    ->value(isset($data[$name]) ? $data[$name] : ""));
             }
         }
     }
@@ -55,8 +51,7 @@ class Base_ORM_Form extends Base_Form
         if ($this->__instance === NULL)
             $this->__instance = $this->__meta["model"];
 
-        foreach ($this->__elements as $element)
-        {
+        foreach ($this->elements() as $element) {
             $this->__instance->{$element->name()} = $element->value();
         }
 

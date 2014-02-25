@@ -9,4 +9,8 @@
 class Field_Text extends Base_Field
 {
     protected $_widget = "Textarea";
+
+    protected $_rules = array(
+        "not_empty" => NULL
+    );
 } 

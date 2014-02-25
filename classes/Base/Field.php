@@ -10,6 +10,8 @@ abstract class Base_Field
 
     protected $_name = "";
 
+    protected $_errors = array();
+
     protected $_css_classes = array();
 
     protected $_rules = array();
@@ -62,11 +64,22 @@ abstract class Base_Field
         return $this;
     }
 
-    public function valid() // ещё не доделано
+    public function valid($file = "")
     {
         $validation = Validation::factory(array(
             $this->name() => $this->value()
         ));
+
+        foreach ($this->_rules as $rule => $args) {
+            $validation->rule($this->name(), $rule, $args);
+        }
+
+        if ($validation->check()) {
+            return true;
+        } else {
+            $this->errors($validation->errors($file));
+            return false;
+        }
     }
 
     public function css_class($class = NULL)
@@ -79,6 +92,16 @@ abstract class Base_Field
 
         if (is_string($class))
             $this->_css_classes[] = $class;
+
+        return $this;
+    }
+
+    public function errors($errors = array())
+    {
+        if (empty($errors))
+            return $this->_errors;
+
+        $this->_errors = Arr::merge($this->_errors, $errors);
 
         return $this;
     }
