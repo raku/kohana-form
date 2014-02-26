@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Kohana-form by NeZanyat</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Kohana-form</h1>
+        <h2>Advanced Form functionality for kohana</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/NeZanyat/kohana-form/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/NeZanyat/kohana-form/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/NeZanyat/kohana-form" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a name="kohana-form" class="anchor" href="#kohana-form"><span class="octicon octicon-link"></span></a>Kohana-form</h1>
+
+<p>Ok, guys, it's time to write some docs</p>
+
+<p>Kohana-form it's a simple module for rendering forms, inspired by django forms module.</p>
+
+<h1>
+<a name="how-it-works" class="anchor" href="#how-it-works"><span class="octicon octicon-link"></span></a>How it works</h1>
+
+<ul>
+<li>As first you should create form class.<br>
+For example:</li>
+</ul><pre><code>&lt;?php defined('SYSPATH') or die('No direct script access.');
+
+
+class Form_Contacts extends Form 
+{
+    public static function meta() // in this method you should return list of fields for the form
+    {
+        return array(
+            "text" =&gt; Field::factory("Email"),
+        );
+    }
+} 
+</code></pre>
+
+<ul>
+<li>After this you can call method in your<br>
+view:</li>
+</ul><pre><code>&lt;form action="/" name="&lt;?php echo $form-&gt;name(); ?&gt;" method="POST"&gt;
+    &lt;?php echo $form ?&gt;
+    &lt;input type="submit"/&gt;
+&lt;/form&gt;
+</code></pre>
+
+<p>And that's all.</p>
+
+<h1>
+<a name="for-orm" class="anchor" href="#for-orm"><span class="octicon octicon-link"></span></a>For ORM</h1>
+
+<p>You can create forms from simple ORM models.</p>
+
+<p>Let's do some:</p>
+
+<p>...Form/News.php</p>
+
+<pre><code>&lt;?php
+defined('SYSPATH') OR die('No direct access allowed.');
+
+class Form_News extends ModelForm
+{
+
+    protected $_valid_messages_file = "news";
+
+    public static function meta()
+    {
+        return array(
+            "model" =&gt; ORM::factory("News"),
+            "display_fields" =&gt; array("title", "body")
+        );
+    }
+} 
+</code></pre>
+
+<p>...Controller/News.php</p>
+
+<pre><code> public function action_add()
+    {
+        $form = Form::factory("News");
+
+        if ($this-&gt;request-&gt;method() == "POST") {
+
+            $form = Form::factory("News", $this-&gt;request-&gt;post());
+
+            $form-&gt;add_field(
+                Field::factory("Hidden")
+                    -&gt;name("user")
+                    -&gt;value(Auth::instance()
+                        -&gt;get_user())
+            );
+            if ($form-&gt;validate())
+                $form-&gt;save();
+        }
+
+        $this-&gt;_data["form"] = $form;
+    }
+</code></pre>
+
+<p>That's all. This module is totally alpha, because here is a lot of work to do yet. I need your help, for write docs, for finish all widgets and many many other important things. </p>
+
+<p>Thank you.</p>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
