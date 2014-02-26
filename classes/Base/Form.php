@@ -8,8 +8,10 @@ abstract class Base_Form implements Iterator
 
     private $__position = 0;
     private $__errors = array();
-    protected $_valid_messages_file = "";
 
+    protected $_options = array(
+        "valid_messages_file" => "",
+    );
 
     public static function factory($classname, $data = NULL, $id = NULL)
     {
@@ -29,7 +31,10 @@ abstract class Base_Form implements Iterator
 
         $meta = $klass::meta();
 
-        foreach ($meta as $name => $field) {
+        $this->_options =
+            Arr::merge($this->_options, Arr::get($meta, "options"));
+
+        foreach (Arr::get($meta, "fields") as $name => $field) {
 
             if ($data !== NULL) {
                 if (isset($data[$name])) {
@@ -37,7 +42,7 @@ abstract class Base_Form implements Iterator
                 }
             }
 
-            $this->__elements[] = $field->name($name);
+            $this->add_field($field->name($name));
         }
     }
 
@@ -45,7 +50,7 @@ abstract class Base_Form implements Iterator
     {
 
         foreach ($this->__elements as $element) {
-            if (!$element->valid($this->_valid_messages_file)) {
+            if (!$element->valid(Arr::get($this->_options, "valid_messages_file"))) {
                 $this->__errors = Arr::merge($this->__errors, $element->errors());
             }
         }
@@ -66,6 +71,8 @@ abstract class Base_Form implements Iterator
     public function add_field(Base_Field $field)
     {
         $this->__elements[] = $field;
+
+        return $this;
     }
 
     public function render()
