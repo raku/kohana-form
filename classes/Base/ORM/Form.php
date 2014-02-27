@@ -65,7 +65,7 @@ class Base_ORM_Form extends Base_Form
     public function save()
     {
         if ($this->__instance === NULL)
-            $this->__instance = $this->__meta["model"];
+            $this->__instance = Arr::get($this->_options, "model");
 
         foreach ($this->elements() as $element) {
             $this->__instance->{$element->name()} = $element->value();
