@@ -37,7 +37,7 @@ view:
     <?php echo $form ?>
     <input type="submit"/>
 </form>
-```php
+```
 
 And that's all.
 
