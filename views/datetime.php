@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/Kalendae/0.4.1/kalendae.css"/>
 
 <label for="datetime">
-    <?php echo ucfirst($name); ?>
+    <?php echo ucfirst(str_replace("_", " ", $name)); ?>
 </label>
 
 <input type="text" class="auto-kal <?php echo implode(" ", $css_classes) ?>" id="datetime" name="<?php echo $name; ?>"

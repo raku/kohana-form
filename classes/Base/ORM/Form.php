@@ -7,6 +7,7 @@ class Base_ORM_Form extends Base_Form
     protected $_options = array(
         "model" => NULL,
         "display_fields" => array(),
+        "except_fields" => array(),
         "valid_messages_file" => ""
     );
 
@@ -39,19 +40,28 @@ class Base_ORM_Form extends Base_Form
         foreach ($columns as $column) {
             $name = $column["column_name"];
 
-            $field = Arr::get($this->__fields, $name, false) ?
-                Arr::get($this->__fields, $name)
-                    ->name($name)
-                    ->value(isset($data[$name]) ? $data[$name] : "")
-                :
-                Field::factory($this->__transform_value($column["data_type"]))
-                    ->name($name)
-                    ->value(isset($data[$name]) ? $data[$name] : "");
+            $field = $this->__create_field($name, $column, $data);
 
-            if (in_array($name, Arr::get($this->_options, "display_fields")) || empty($this->_options["display_fields"])) {
-                $this->add_field($field);
+            if (
+                in_array($name, Arr::get($this->_options, "display_fields")) ||
+                empty($this->_options["display_fields"])
+            ) {
+                if (!in_array($name, Arr::get($this->_options, "except_fields")))
+                    $this->add_field($field);
             }
         }
+    }
+
+    private function __create_field($name, $column, $data)
+    {
+        return Arr::get($this->__fields, $name, false) ?
+            Arr::get($this->__fields, $name)
+                ->name($name)
+                ->value(isset($data[$name]) ? $data[$name] : "")
+            :
+            Field::factory($this->__transform_value($column["data_type"]))
+                ->name($name)
+                ->value(isset($data[$name]) ? $data[$name] : "");
     }
 
     private function __transform_value($value)
