@@ -1,18 +1,39 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 
+/**
+ * Class Base_Form
+ */
 abstract class Base_Form implements Iterator
 {
 
+    /**
+     * @var array
+     */
     private $__elements = array();
 
+    /**
+     * @var int
+     */
     private $__position = 0;
+    /**
+     * @var array
+     */
     private $__errors = array();
 
+    /**
+     * @var array
+     */
     protected $_options = array(
         "valid_messages_file" => "",
     );
 
+    /**
+     * @param $classname
+     * @param null $data
+     * @param null $id
+     * @return mixed
+     */
     public static function factory($classname, $data = NULL, $id = NULL)
     {
         $class = "Form_" . $classname;
@@ -20,11 +41,18 @@ abstract class Base_Form implements Iterator
         return new $class($data, $id);
     }
 
+    /**
+     * @return array
+     */
     protected function elements()
     {
         return $this->__elements;
     }
 
+    /**
+     * @param null $data
+     * @param null $id
+     */
     public function __construct($data = NULL, $id = NULL)
     {
         $klass = get_called_class();
@@ -46,6 +74,9 @@ abstract class Base_Form implements Iterator
         }
     }
 
+    /**
+     * @return bool
+     */
     public function validate()
     {
 
@@ -58,16 +89,26 @@ abstract class Base_Form implements Iterator
         return empty($this->__errors);
     }
 
+    /**
+     * @return array
+     */
     public function errors()
     {
         return $this->__errors;
     }
 
+    /**
+     * @return string
+     */
     public function name()
     {
         return strtolower(str_replace("Form_", "", get_called_class()));
     }
 
+    /**
+     * @param Base_Field $field
+     * @return $this
+     */
     public function add_field(Base_Field $field)
     {
         $this->__elements[] = $field;
@@ -75,6 +116,9 @@ abstract class Base_Form implements Iterator
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function render()
     {
         $result = "";
@@ -86,36 +130,57 @@ abstract class Base_Form implements Iterator
         return $result;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->render();
     }
 
+    /**
+     * @return array
+     */
     public static function meta()
     {
         return array();
     }
 
+    /**
+     * @return mixed
+     */
     public function current()
     {
         return $this->__elements[$this->__position];
     }
 
+    /**
+     *
+     */
     public function next()
     {
         ++$this->__position;
     }
 
+    /**
+     * @return int
+     */
     public function key()
     {
         return $this->__position;
     }
 
+    /**
+     * @return bool
+     */
     public function valid()
     {
         return isset($this->__elements[$this->__position]);
     }
 
+    /**
+     *
+     */
     public function rewind()
     {
         $this->__position = 0;

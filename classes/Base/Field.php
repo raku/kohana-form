@@ -1,23 +1,52 @@
 <?php
 defined('SYSPATH') or die('No direct script access.');
 
+/**
+ * Class Base_Field
+ */
 abstract class Base_Field
 {
 
+    /**
+     * @var string
+     */
     protected $_widget = "";
 
+    /**
+     * @var string
+     */
     protected $_value = "";
 
+    /**
+     * @var string
+     */
     protected $_name = "";
 
+    /**
+     * @var array
+     */
     protected $_errors = array();
 
+    /**
+     * @var array
+     */
     protected $_css_classes = array();
 
+    /**
+     * @var array
+     */
     protected $_rules = array();
 
+    /**
+     * @var array
+     */
     protected $_options = array();
 
+    /**
+     * @param $type
+     * @param array $options
+     * @return mixed
+     */
     public static function factory($type, $options = array())
     {
         $class = "Field_" . $type;
@@ -25,11 +54,18 @@ abstract class Base_Field
         return new $class($options);
     }
 
+    /**
+     * @param $options
+     */
     public function __construct($options)
     {
         $this->_options = Arr::merge($this->_options, $options);
     }
 
+    /**
+     * @param null $string
+     * @return $this|string
+     */
     public function value($string = NULL)
     {
         if ($string === NULL)
@@ -40,6 +76,10 @@ abstract class Base_Field
         return $this;
     }
 
+    /**
+     * @param null $string
+     * @return $this|string
+     */
     public function name($string = NULL)
     {
         if ($string === NULL)
@@ -50,6 +90,10 @@ abstract class Base_Field
         return $this;
     }
 
+    /**
+     * @param null $type
+     * @return $this
+     */
     public function widget($type = NULL)
     {
         if ($type === NULL)
@@ -64,6 +108,10 @@ abstract class Base_Field
         return $this;
     }
 
+    /**
+     * @param string $file
+     * @return bool
+     */
     public function valid($file = "")
     {
         $validation = Validation::factory(array(
@@ -82,6 +130,10 @@ abstract class Base_Field
         }
     }
 
+    /**
+     * @param null $class
+     * @return $this|array
+     */
     public function css_class($class = NULL)
     {
         if ($class === NULL)
@@ -96,6 +148,10 @@ abstract class Base_Field
         return $this;
     }
 
+    /**
+     * @param array $errors
+     * @return $this|array
+     */
     public function errors($errors = array())
     {
         if (empty($errors))
@@ -106,6 +162,9 @@ abstract class Base_Field
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
     public function render()
     {
         $widget = $this->widget();
@@ -113,6 +172,9 @@ abstract class Base_Field
         return $widget->render();
     }
 
+    /**
+     * @return mixed
+     */
     public function __toString()
     {
         return $this->render();
