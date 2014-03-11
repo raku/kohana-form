@@ -15,9 +15,29 @@ class Base_Formset implements Iterator
     private $__options = array(
         "base_form" => NULL,
         "count" => 3,
+        "theme" => "formset",
         "template" => "template"
     );
 
+    public static function factory($class)
+    {
+        $classname = "Formset_" . $class;
+
+        return new $classname();
+    }
+
+    public function __construct()
+    {
+        $klass = get_called_class();
+
+        $this->__options = Arr::merge($this->__options, $klass::meta());
+
+        if (!Arr::get($this->__options, "base_form", false)) {
+            throw new Kohana_Exception("Please, define a base form for formset");
+        } else {
+            $this->_build_formset();
+        }
+    }
 
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
@@ -73,5 +93,31 @@ class Base_Formset implements Iterator
     public function rewind()
     {
         // TODO: Implement rewind() method.
+    }
+
+    public function __toString()
+    {
+        return $this->render();
+    }
+
+    private function _build_formset()
+    {
+        $base_form_name = Arr::get($this->__options, "base_form");
+
+        for ($i = 0; $i < Arr::get($this->__options, "count", 1); $i++) {
+            $this->__forms[] = Form::factory($base_form_name);
+        }
+    }
+
+    public function render()
+    {
+        $view_name = Arr::get($this->__options, "template");
+        $theme_name = Arr::get($this->__options, "theme");
+
+        $view = View::factory("$theme_name/$view_name", array(
+            "forms" => $this->__forms
+        ));
+
+        return $view->render();
     }
 }
