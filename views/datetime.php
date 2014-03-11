@@ -6,5 +6,5 @@
     <?php echo ucfirst(str_replace("_", " ", $name)); ?>
 </label>
 
-<input type="text" class="auto-kal <?php echo implode(" ", $css_classes) ?>" id="datetime" name="<?php echo $name; ?>"
+<input type="text" class="auto-kal <?php echo implode(" ", $css_classes) ?>" id="datetime" name="<?php echo $name . $formset_index; ?>"
        value="<?php echo $value; ?>"/>

@@ -42,6 +42,8 @@ abstract class Base_Field
      */
     protected $_options = array();
 
+    private $__formset_index = "";
+
     /**
      * @param $type
      * @param array $options
@@ -100,7 +102,8 @@ abstract class Base_Field
             return Widget::factory($this->_widget, array(
                 "value" => $this->value(),
                 "name" => $this->name(),
-                "css_classes" => $this->css_class()
+                "css_classes" => $this->css_class(),
+                "formset_index" => $this->formset_index()
             ));
 
         $this->_widget = $type;
@@ -178,6 +181,16 @@ abstract class Base_Field
     public function __toString()
     {
         return $this->render();
+    }
+
+    public function formset_index($string = NULL)
+    {
+        if ($string === NULL)
+            return $this->__formset_index;
+
+        $this->__formset_index = $string;
+
+        return $this;
     }
 
 }

@@ -22,6 +22,16 @@ abstract class Base_Form implements Iterator
     private $__errors = array();
 
     /**
+     * @var bool
+     */
+    private $__is_formset_element = false;
+
+    /**
+     * @var int
+     */
+    private $__number = 0;
+
+    /**
      * @var array
      */
     protected $_options = array(
@@ -75,6 +85,35 @@ abstract class Base_Form implements Iterator
     }
 
     /**
+     * @param null $value
+     * @return bool
+     */
+    public function is_formset_element($value = NULL)
+    {
+        if ($value === NULL)
+            return $this->__is_formset_element;
+
+        $this->__is_formset_element = $value;
+
+        return $this;
+    }
+
+
+    /**
+     * @param null $value
+     * @return int
+     */
+    public function number($value = NULL)
+    {
+        if ($value === NULL)
+            return $this->__number;
+
+        $this->__number = $value;
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function validate()
@@ -124,6 +163,9 @@ abstract class Base_Form implements Iterator
         $result = "";
 
         foreach ($this as $field) {
+            if ($this->is_formset_element()) {
+                $field->formset_index("[" . $this->number() . "][]");
+            }
             $result .= $field;
         }
 
