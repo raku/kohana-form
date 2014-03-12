@@ -44,7 +44,7 @@ abstract class Base_Widget
      */
     public function render()
     {
-        return View::factory($this->_view_name, $this->_attributes)
+        return View::factory($this->_attributes["theme"] . "/" . $this->_view_name, $this->_attributes)
             ->render();
     }
 } 

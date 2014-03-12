@@ -8,7 +8,8 @@ class Base_ORM_Form extends Base_Form
         "model" => NULL,
         "display_fields" => array(),
         "except_fields" => array(),
-        "valid_messages_file" => ""
+        "valid_messages_file" => "",
+        "theme" => "base"
     );
 
     private $__fields = array();
@@ -45,6 +46,8 @@ class Base_ORM_Form extends Base_Form
             $name = $column["column_name"];
 
             $field = $this->__create_field($name, $column, $data);
+
+            $field->theme(Arr::get($this->_options, "theme"));
 
             if (
                 in_array($name, Arr::get($this->_options, "display_fields")) ||

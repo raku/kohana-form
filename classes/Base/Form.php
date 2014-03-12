@@ -36,6 +36,7 @@ abstract class Base_Form implements Iterator
      */
     protected $_options = array(
         "valid_messages_file" => "",
+        "theme" => "base"
     );
 
     /**
@@ -79,6 +80,8 @@ abstract class Base_Form implements Iterator
                     $field->value($data[$name]);
                 }
             }
+
+            $field->theme(Arr::get($this->_options, "theme"));
 
             $this->add_field($field->name($name));
         }

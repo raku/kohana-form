@@ -42,6 +42,8 @@ abstract class Base_Field
      */
     protected $_options = array();
 
+    protected $_theme = "";
+
     private $__formset_index = "";
 
     /**
@@ -103,7 +105,8 @@ abstract class Base_Field
                 "value" => $this->value(),
                 "name" => $this->name(),
                 "css_classes" => $this->css_class(),
-                "formset_index" => $this->formset_index()
+                "formset_index" => $this->formset_index(),
+                "theme" => $this->theme()
             ));
 
         $this->_widget = $type;
@@ -189,6 +192,17 @@ abstract class Base_Field
             return $this->__formset_index;
 
         $this->__formset_index = $string;
+
+        return $this;
+    }
+
+    public function theme($string = NULL)
+    {
+
+        if ($string === NULL)
+            return $this->_theme;
+
+        $this->_theme = $string;
 
         return $this;
     }
