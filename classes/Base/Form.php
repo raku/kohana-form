@@ -3,11 +3,18 @@
 
 /**
  * Class Base_Form
+ *
+ * @package    Kohana/kohana-form
+ * @author     Latyshenko Roman
+ * @version    0.0.0.2
+ *
+ *
  */
 abstract class Base_Form implements Iterator
 {
 
     /**
+     * Storing form fields
      * @var array
      */
     private $__elements = array();
@@ -17,11 +24,15 @@ abstract class Base_Form implements Iterator
      */
     private $__position = 0;
     /**
+     * Storing validation errors
+     *
      * @var array
      */
     private $__errors = array();
 
     /**
+     * Flag which says, should we add formset index to field name
+     *
      * @var bool
      */
     private $__is_formset_element = false;
@@ -53,6 +64,7 @@ abstract class Base_Form implements Iterator
     }
 
     /**
+     * Return form fields
      * @return array
      */
     protected function elements()
@@ -88,6 +100,9 @@ abstract class Base_Form implements Iterator
     }
 
     /**
+     *
+     * Says is this an formset form
+     *
      * @param null $value
      * @return bool
      */
@@ -103,6 +118,8 @@ abstract class Base_Form implements Iterator
 
 
     /**
+     * Number in formset array
+     *
      * @param null $value
      * @return int
      */
@@ -117,6 +134,8 @@ abstract class Base_Form implements Iterator
     }
 
     /**
+     * Check all fields and fill the errors if needed
+     *
      * @return bool
      */
     public function validate()
@@ -132,6 +151,8 @@ abstract class Base_Form implements Iterator
     }
 
     /**
+     * Return validation errors
+     *
      * @return array
      */
     public function errors()
@@ -140,6 +161,8 @@ abstract class Base_Form implements Iterator
     }
 
     /**
+     *
+     * Form name
      * @return string
      */
     public function name()
@@ -148,6 +171,8 @@ abstract class Base_Form implements Iterator
     }
 
     /**
+     * Adding field to form
+     *
      * @param Base_Field $field
      * @return $this
      */
@@ -159,6 +184,8 @@ abstract class Base_Form implements Iterator
     }
 
     /**
+     * Show form on a page
+     *
      * @return string
      */
     public function render()
@@ -173,6 +200,7 @@ abstract class Base_Form implements Iterator
     }
 
     /**
+     * Some magic
      * @return string
      */
     public function __toString()
@@ -181,6 +209,8 @@ abstract class Base_Form implements Iterator
     }
 
     /**
+     * Basic method for initialization
+     *
      * @return array
      */
     public static function meta()

@@ -1,9 +1,35 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
 
+/**
+ * Class Base_ORM_Form
+ *
+ *
+ * @package    Kohana/kohana-form
+ * @author     Latyshenko Roman
+ * @version    0.0.0.2
+ *
+ *
+ */
 class Base_ORM_Form extends Base_Form
 {
+    /**
+     * Storing an ORM instance
+     * @var null
+     */
     private $__instance = NULL;
+    /**
+     * Some options for customizing.
+     *
+     * "model" => ORM instance of a model for creating form
+     * "display_fields" => What fields you want to show
+     * "except_fields" => What fields you want to hide
+     * "valid_messages_file" => Name of a file with beauty valid messages
+     * "theme" => I think you could get it by yourself
+     *
+     * @var array
+     * @access protected
+     */
     protected $_options = array(
         "model" => NULL,
         "display_fields" => array(),
@@ -12,8 +38,17 @@ class Base_ORM_Form extends Base_Form
         "theme" => "base"
     );
 
+    /**
+     * Storing a form fields
+     *
+     * @var array|mixed
+     */
     private $__fields = array();
 
+    /**
+     * @param array $data
+     * @param null $id
+     */
     public function __construct($data = array(), $id = NULL)
     {
 
@@ -59,6 +94,12 @@ class Base_ORM_Form extends Base_Form
         }
     }
 
+    /**
+     * @param $name
+     * @param $column
+     * @param $data
+     * @return mixed
+     */
     private function __create_field($name, $column, $data)
     {
         return Arr::get($this->__fields, $name, false) ?
@@ -71,6 +112,10 @@ class Base_ORM_Form extends Base_Form
                 ->value(isset($data[$name]) ? $data[$name] : "");
     }
 
+    /**
+     * @param $value
+     * @return string
+     */
     private function __transform_value($value)
     {
         return Inflector::underscore(
@@ -79,6 +124,9 @@ class Base_ORM_Form extends Base_Form
             ));
     }
 
+    /**
+     *Saving an instance with data in form
+     */
     public function save()
     {
         if ($this->__instance === NULL)

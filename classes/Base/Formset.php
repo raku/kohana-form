@@ -3,6 +3,13 @@ defined('SYSPATH') OR die('No direct access allowed.');
 
 /**
  * Class Base_Formset
+ *
+ * Creating multiforms with clean formset indexes for managing repeated data
+ *
+ * @package    Kohana/kohana-form
+ * @author     Latyshenko Roman
+ * @version    0.0.0.2
+ *
  */
 class Base_Formset implements Iterator
 {
@@ -13,11 +20,17 @@ class Base_Formset implements Iterator
     private $__position = 0;
 
     /**
+     * Storing created forms
      * @var array
      */
     private $__forms = array();
 
     /**
+     * Some options for customizing
+     *
+     * "base_form" => String name of a base form
+     * "count" => It's obvious, I think.
+     *
      * @var array
      */
     private $__options = array(
@@ -27,9 +40,19 @@ class Base_Formset implements Iterator
         "template" => "template"
     );
 
+
+    /**
+     * Little feature for theming.
+     *
+     * If you want to show some unusual data in your theme, you should give it to method extra_data()
+     *
+     * @var array
+     */
     private $__extra_data = array();
 
     /**
+     * Basic method for initialization
+     *
      * @return array
      */
     public static function meta()
@@ -162,6 +185,14 @@ class Base_Formset implements Iterator
         $this->__position = 0;
     }
 
+    /**
+     * Little feature for theming.
+     *
+     * If you want to show some unusual data in your theme, you should give it to method extra_data()
+     *
+     * @param null $data
+     * @return $this|array
+     */
     public function extra_data($data = NULL)
     {
         if ($data === NULL)
