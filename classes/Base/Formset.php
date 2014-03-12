@@ -27,6 +27,8 @@ class Base_Formset implements Iterator
         "template" => "template"
     );
 
+    private $__extra_data = array();
+
     /**
      * @return array
      */
@@ -39,38 +41,42 @@ class Base_Formset implements Iterator
      * @param $class
      * @return mixed
      */
-    public static function factory($class)
+    public static function factory($class, $data = NULL)
     {
         $classname = "Formset_" . $class;
 
-        return new $classname();
+        return new $classname($data);
     }
 
     /**
      *
      */
-    public function __construct()
+    public function __construct($data = NULL)
     {
         $klass = get_called_class();
 
         $this->__options = Arr::merge($this->__options, $klass::meta());
 
+        if ($data !== NULL)
+            $this->__options["count"] += count($data);
+
+
         if (!Arr::get($this->__options, "base_form", false)) {
             throw new Kohana_Exception("Please, define a base form for formset");
         } else {
-            $this->_build_formset();
+            $this->_build_formset($data);
         }
     }
 
     /**
      *
      */
-    private function _build_formset()
+    private function _build_formset($data = NULL)
     {
         $base_form_name = Arr::get($this->__options, "base_form");
-
         for ($i = 1; $i <= Arr::get($this->__options, "count", 1); $i++) {
-            $this->__forms[] = Form::factory($base_form_name)
+
+            $this->__forms[] = Form::factory($base_form_name, isset($data[$i - 1]) ? $data[$i - 1] : NULL)
                 ->is_formset_element(true)
                 ->number($i);
         }
@@ -85,7 +91,8 @@ class Base_Formset implements Iterator
         $theme_name = Arr::get($this->__options, "theme");
 
         $view = View::factory("$theme_name/$view_name", array(
-            "forms" => $this->__forms
+            "forms" => $this->__forms,
+            "extra_data" => $this->extra_data()
         ));
 
         return $view->render();
@@ -153,6 +160,16 @@ class Base_Formset implements Iterator
     public function rewind()
     {
         $this->__position = 0;
+    }
+
+    public function extra_data($data = NULL)
+    {
+        if ($data === NULL)
+            return $this->__extra_data;
+
+        $this->__extra_data = $data;
+
+        return $this;
     }
 
 }

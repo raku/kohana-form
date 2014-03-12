@@ -15,6 +15,7 @@ class Base_ORM_Form extends Base_Form
 
     public function __construct($data = array(), $id = NULL)
     {
+
         $klass = get_called_class();
 
         $meta = $klass::meta();
@@ -22,6 +23,9 @@ class Base_ORM_Form extends Base_Form
         $this->_options = Arr::merge($this->_options, Arr::get($meta, "options"));
 
         $this->__fields = Arr::get($meta, "fields");
+
+        if ($data instanceof ORM)
+            $data = $data->as_array();
 
         $columns = Arr::get($this->_options, "model")->list_columns();
 

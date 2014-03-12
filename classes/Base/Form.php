@@ -163,9 +163,6 @@ abstract class Base_Form implements Iterator
         $result = "";
 
         foreach ($this as $field) {
-            if ($this->is_formset_element()) {
-                $field->formset_index("[" . $this->number() . "][]");
-            }
             $result .= $field;
         }
 
@@ -193,6 +190,9 @@ abstract class Base_Form implements Iterator
      */
     public function current()
     {
+        if ($this->is_formset_element()) {
+            $this->__elements[$this->__position]->formset_index("[" . $this->number() . "][]");
+        }
         return $this->__elements[$this->__position];
     }
 
