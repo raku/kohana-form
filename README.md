@@ -111,7 +111,7 @@ Form::factory("Article", array(), $id);
 
 
 ```
-Form::factory("Article", array("title" => "Hello, Habr!"));
+Form::factory("Article", array("title" => "Hello!"));
 
 ```
 
