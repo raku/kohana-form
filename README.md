@@ -1,83 +1,128 @@
-Kohana-form
-=========
+Как пользоваться:
+===
 
-Ok, guys, it's time to write some docs
-
-Kohana-form it's a simple module for rendering forms, inspired by django forms module.
+Создание формы:
 
 
-How it works
-=========
-
-* As first you should create form class.  
-For example:
-
-
-```
-<?php defined('SYSPATH') or die('No direct script access.');
-
-
-class Form_Contacts extends Form 
-{
-    public static function meta() // in this method you should return list of fields for the form
-    {
-        return array(
-            "text" => Field::factory("Email"),
-        );
-    }
-} 
-```
-
-
-* After this you can call method in your  
-view:
-
-```
-<form action="/" name="<?php echo $form->name(); ?>" method="POST">
-    <?php echo $form ?>
-    <input type="submit"/>
-</form>
-```
-
-And that's all.
-
-#For ORM
-
-You can create forms from simple ORM models.
-
-Let's do some:
-
-...Form/News.php
 
 ```
 <?php
 defined('SYSPATH') OR die('No direct access allowed.');
 
-class Form_News extends ModelForm
+class Form_Login extends Form
 {
+    public static function meta()
+    {
+        return array(
+            "fields" => array(
+                "login" => Field::factory("Varchar"),
+                "password" => Field::factory("Password"),
+            ),
 
-    protected $_valid_messages_file = "news";
+            "options" => array( // заполняется по желанию. может быть пустым массивом.
+                "valid_messages_file" => "login", // файл в котором лежат сообщения валидации, должен находиться в папке messages
+                "theme" => "base" // тема формы. base - тема по умолчанию, из коробки есть 2 темы: base, nolabels. nolabels это таже тема base только без тегов label
+            ),
+        );
+    }
+} 
+
+```
+
+Имеющиеся типы полей:
+
+<ul>
+	<li> Email</li>
+<li> Hidden </li>
+<li> Image</li>
+<li> Int </li>
+<li> Password </li>
+<li> Text </li>
+<li> Timestamp</li>
+<li> Varchar </li>
+<li> Int Unsigned </li>
+</ul>
+
+Как показать форму:
+
+Просто показать
+
+```
+ <form>
+     <?php echo $form; ?>
+     <input type="submit" value="Add"/>
+ </form>
+
+```
+
+Показать с стилями bootstrap:
+
+```
+       <form method="POST" role="form">
+            <?php foreach ($form as $field): ?>
+                <div class="form-group">
+                    <?php $field->css_class(array("form-control")); ?>
+                    <?php foreach ($field->errors() as $error): ?>
+                        <div class="alert alert-danger">
+                            <?php echo $error; ?>
+                        </div>
+                    <?php endforeach; ?>
+                    <?php echo $field; ?>
+                </div>
+            <? endforeach; ?>
+            <input type="submit" class="btn btn-primary" value="Add"/>
+        </form>
+
+```
+
+Создать модельную форму:
+
+```
+class Form_Article extends ModelForm
+{
 
     public static function meta()
     {
         return array(
-            "model" => ORM::factory("News"),
-            "display_fields" => array("title", "body")
+            "fields" => array( //необязательно для заполнения. используется для переопределения полей, если это требуется.
+                "image" => Field::factory("Image")
+            ),
+            "options" => array(
+                "model" => ORM::factory("Article"), //собственно модель из которой будем генерить форму
+                "display_fields" => array("title", "body", "image"), //отображаемые поля
+                "valid_messages_file" => "news", //используемый файл для сообщений валидации
+                "except_fields" => array() //какие поля скрыть и не показывать
+            ),
         );
     }
-} 
-```
-
-...Controller/News.php
+}
 
 ```
- public function action_add()
+
+Создать форму для определенной сущности в базе данных
+
+
+```
+Form::factory("Article", array(), $id);
+
+```
+
+Создать форму для определенного набора данных
+
+
+```
+Form::factory("Article", array("title" => "Hello, Habr!"));
+
+```
+
+Получить и сохранить модельную форму:
+
+```
+public function action_add()
     {
-        $form = Form::factory("News");
+       if ($this->request->method() == "POST") {
 
-        if ($this->request->method() == "POST") {
-
-            $form = Form::factory("News", $this->request->post());
+            $form = Form::factory("Article", $this->request->post());
 
             $form->add_field(
                 Field::factory("Hidden")
@@ -87,13 +132,29 @@ class Form_News extends ModelForm
             );
             if ($form->validate())
                 $form->save();
-        }
-
-        $this->_data["form"] = $form;
+        }       
     }
+
 ```
 
-That's all. This module is totally alpha, because here is a lot of work to do yet. I need your help, for write docs, for finish all widgets and many many other important things. 
+Создать formset
 
-Thank you.
+```
+<?php
+defined('SYSPATH') OR die('No direct access allowed.');
 
+class Formset_News extends Formset
+{
+
+    public static function meta()
+    {
+        return array(
+            "base_form" => "News",
+            "theme" => "bootstrap"
+        );
+    }
+} 
+
+```
+
+Формсеты так же имплементируют Iterator, поэтому можно легко получить доступ к каждому элементу.
