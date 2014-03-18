@@ -3,105 +3,145 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
     <title>Kohana-form by NeZanyat</title>
   </head>
 
   <body>
-
     <header>
-      <div class="container">
+      <div class="inner">
         <h1>Kohana-form</h1>
         <h2>Advanced Form functionality for kohana</h2>
-
-        <section id="downloads">
-          <a href="https://github.com/NeZanyat/kohana-form/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/NeZanyat/kohana-form/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/NeZanyat/kohana-form" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
+        <a href="https://github.com/NeZanyat/kohana-form" class="button"><small>View project on</small>GitHub</a>
       </div>
     </header>
 
-    <div class="container">
-      <section id="main_content">
-        <h1>
-<a name="kohana-form" class="anchor" href="#kohana-form"><span class="octicon octicon-link"></span></a>Kohana-form</h1>
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="kohana-form-%D0%BF%D1%80%D0%BE%D0%B4%D0%B2%D0%B8%D0%BD%D1%83%D1%82%D0%B0%D1%8F-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D1%8C-%D1%84%D0%BE%D1%80%D0%BC-%D0%B4%D0%BB%D1%8F-%D0%BA%D0%BE%D1%85%D0%B0%D0%BD%D1%8B" class="anchor" href="#kohana-form-%D0%BF%D1%80%D0%BE%D0%B4%D0%B2%D0%B8%D0%BD%D1%83%D1%82%D0%B0%D1%8F-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%BE%D0%BD%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D1%8C-%D1%84%D0%BE%D1%80%D0%BC-%D0%B4%D0%BB%D1%8F-%D0%BA%D0%BE%D1%85%D0%B0%D0%BD%D1%8B"><span class="octicon octicon-link"></span></a>kohana-form: продвинутая функциональность форм для коханы</h1>
 
-<p>Ok, guys, it's time to write some docs</p>
+<p>Как пользоваться:</p>
 
-<p>Kohana-form it's a simple module for rendering forms, inspired by django forms module.</p>
-
-<h1>
-<a name="how-it-works" class="anchor" href="#how-it-works"><span class="octicon octicon-link"></span></a>How it works</h1>
-
-<ul>
-<li>As first you should create form class.<br>
-For example:</li>
-</ul><pre><code>&lt;?php defined('SYSPATH') or die('No direct script access.');
-
-
-class Form_Contacts extends Form 
-{
-    public static function meta() // in this method you should return list of fields for the form
-    {
-        return array(
-            "text" =&gt; Field::factory("Email"),
-        );
-    }
-} 
-</code></pre>
-
-<ul>
-<li>After this you can call method in your<br>
-view:</li>
-</ul><pre><code>&lt;form action="/" name="&lt;?php echo $form-&gt;name(); ?&gt;" method="POST"&gt;
-    &lt;?php echo $form ?&gt;
-    &lt;input type="submit"/&gt;
-&lt;/form&gt;
-</code></pre>
-
-<p>And that's all.</p>
-
-<h1>
-<a name="for-orm" class="anchor" href="#for-orm"><span class="octicon octicon-link"></span></a>For ORM</h1>
-
-<p>You can create forms from simple ORM models.</p>
-
-<p>Let's do some:</p>
-
-<p>...Form/News.php</p>
+<p>Создание формы</p>
 
 <pre><code>&lt;?php
 defined('SYSPATH') OR die('No direct access allowed.');
 
-class Form_News extends ModelForm
+class Form_Login extends Form
 {
+    public static function meta()
+    {
+        return array(
+            "fields" =&gt; array(
+                "login" =&gt; Field::factory("Varchar"),
+                "password" =&gt; Field::factory("Password"),
+            ),
 
-    protected $_valid_messages_file = "news";
+            "options" =&gt; array( // заполняется по желанию. может быть пустым массивом.
+                "valid_messages_file" =&gt; "login", // файл в котором лежат сообщения валидации, должен находиться в папке messages
+                "theme" =&gt; "base" // тема формы. base - тема по умолчанию, из коробки есть 2 темы: base, nolabels. nolabels это таже тема base только без тегов label
+            ),
+        );
+    }
+} 
+
+</code></pre>
+
+<p>Имеющиеся типы полей:</p>
+
+<ul>
+<li> Email</li>
+<li> Hidden </li>
+<li> Image</li>
+<li> Int </li>
+<li> Password </li>
+<li> Text </li>
+<li> Timestamp</li>
+<li> Varchar </li>
+<li> Int Unsigned </li>
+</ul><p>Как показать форму:</p>
+
+<p>Просто показать</p>
+
+<pre><code> &lt;form&gt;
+     &lt;?php echo $form; ?&gt;
+     &lt;input type="submit" value="Add"/&gt;
+ &lt;/form&gt;
+
+</code></pre>
+
+<p>Показать с стилями bootstrap:</p>
+
+<pre><code>       &lt;form method="POST" role="form"&gt;
+            &lt;?php foreach ($form as $field): ?&gt;
+                &lt;div class="form-group"&gt;
+                    &lt;?php $field-&gt;css_class(array("form-control")); ?&gt;
+                    &lt;?php foreach ($field-&gt;errors() as $error): ?&gt;
+                        &lt;div class="alert alert-danger"&gt;
+                            &lt;?php echo $error; ?&gt;
+                        &lt;/div&gt;
+                    &lt;?php endforeach; ?&gt;
+                    &lt;?php echo $field; ?&gt;
+                &lt;/div&gt;
+            &lt;? endforeach; ?&gt;
+            &lt;input type="submit" class="btn btn-primary" value="Add"/&gt;
+        &lt;/form&gt;
+
+</code></pre>
+
+<p>Создать модельную форму:</p>
+
+<pre><code>class Form_Article extends ModelForm
+{
 
     public static function meta()
     {
         return array(
-            "model" =&gt; ORM::factory("News"),
-            "display_fields" =&gt; array("title", "body")
+            "fields" =&gt; array( //необязательно для заполнения. используется для переопределения полей, если это требуется.
+                "image" =&gt; Field::factory("Image")
+            ),
+            "options" =&gt; array(
+                "model" =&gt; ORM::factory("Article"), //собственно модель из которой будем генерить форму
+                "display_fields" =&gt; array("title", "body", "image"), //отображаемые поля
+                "valid_messages_file" =&gt; "news", //используемый файл для сообщений валидации
+                "except_fields" =&gt; array() //какие поля скрыть и не показывать
+            ),
         );
     }
-} 
+}
+
 </code></pre>
 
-<p>...Controller/News.php</p>
+<p>Создать форму для определенной сущности в базе данных</p>
 
-<pre><code> public function action_add()
+<pre><code>Form::factory("Article", array(), $id);
+
+</code></pre>
+
+<p>Создать форму для определенного набора данных</p>
+
+<pre><code>Form::factory("Article", array("title" =&gt; "Hello!"));
+
+</code></pre>
+
+<p>Получить и сохранить модельную форму:</p>
+
+<pre><code>public function action_add()
     {
-        $form = Form::factory("News");
+       if ($this-&gt;request-&gt;method() == "POST") {
 
-        if ($this-&gt;request-&gt;method() == "POST") {
-
-            $form = Form::factory("News", $this-&gt;request-&gt;post());
+            $form = Form::factory("Article", $this-&gt;request-&gt;post());
 
             $form-&gt;add_field(
                 Field::factory("Hidden")
@@ -111,18 +151,50 @@ class Form_News extends ModelForm
             );
             if ($form-&gt;validate())
                 $form-&gt;save();
-        }
-
-        $this-&gt;_data["form"] = $form;
+        }       
     }
+
 </code></pre>
 
-<p>That's all. This module is totally alpha, because here is a lot of work to do yet. I need your help, for write docs, for finish all widgets and many many other important things. </p>
+<p>Создать formset</p>
 
-<p>Thank you.</p>
-      </section>
+<pre><code>&lt;?php
+defined('SYSPATH') OR die('No direct access allowed.');
+
+class Formset_News extends Formset
+{
+
+    public static function meta()
+    {
+        return array(
+            "base_form" =&gt; "News",
+            "theme" =&gt; "bootstrap"
+        );
+    }
+} 
+
+</code></pre>
+
+<p>Формсеты так же имплементируют Iterator, поэтому можно легко получить доступ к каждому элементу.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/NeZanyat/kohana-form/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/NeZanyat/kohana-form/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/NeZanyat/kohana-form"></a> is maintained by <a href="https://github.com/NeZanyat">NeZanyat</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
     </div>
 
-    
+  
   </body>
 </html>
