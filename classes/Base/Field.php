@@ -42,8 +42,14 @@ abstract class Base_Field
      */
     protected $_options = array();
 
+    /**
+     * @var string
+     */
     protected $_theme = "";
 
+    /**
+     * @var string
+     */
     private $__formset_index = "";
 
     /**
@@ -186,6 +192,10 @@ abstract class Base_Field
         return $this->render();
     }
 
+    /**
+     * @param null $string
+     * @return $this|string
+     */
     public function formset_index($string = NULL)
     {
         if ($string === NULL)
@@ -196,6 +206,10 @@ abstract class Base_Field
         return $this;
     }
 
+    /**
+     * @param null $string
+     * @return $this|string
+     */
     public function theme($string = NULL)
     {
 
