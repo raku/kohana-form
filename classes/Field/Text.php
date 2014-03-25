@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: roman
- * Date: 24.12.13
- * Time: 15:08
- */
+defined('SYSPATH') or die('No direct script access.');
 
 class Field_Text extends Base_Field
 {

@@ -1,7 +1,7 @@
 <?php
 defined('SYSPATH') or die('No direct script access.');
 
-class Choice extends Field
+class Field_Choice extends Base_Field
 {
     protected $_widget = "Select";
 
@@ -9,11 +9,16 @@ class Choice extends Field
         "not_empty" => NULL
     );
 
-    public function widget($type = NULL)
+    public function __construct($options)
     {
-        if (!isset($this->_options["choices"]))
+        if (!isset($options["choices"]))
             throw new Kohana_Exception("You should define a list of a choices into a factory for Choice field");
 
+        $this->_options = Arr::merge($this->_options, $options);
+    }
+
+    public function widget($type = NULL)
+    {
         if ($type === NULL)
             return Widget::factory($this->_widget, array(
                 "value" => $this->value(),

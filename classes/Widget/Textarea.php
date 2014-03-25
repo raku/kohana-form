@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: roman
- * Date: 24.12.13
- * Time: 15:09
- */
+defined('SYSPATH') or die('No direct script access.');
 
 class Widget_Textarea extends Base_Widget
 {

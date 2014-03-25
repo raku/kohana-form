@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: roman
- * Date: 19.02.14
- * Time: 14:42
- */
+defined('SYSPATH') or die('No direct script access.');
 
 class Field_Hidden extends Base_Field
 {

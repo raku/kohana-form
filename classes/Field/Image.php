@@ -13,7 +13,7 @@ class Field_Image extends Base_Field
     protected $_upload_dir = "";
 
     protected $_rules = array(
-        "Upload::valid" => NULL,
+        "Upload::valid" => array(":value"),
         "Upload::type" => array(':files', array('jpg', 'png', 'gif'))
     );
 
@@ -40,7 +40,7 @@ class Field_Image extends Base_Field
     public function valid($file = "")
     {
         $validation = Validation::factory(array(
-            $this->name() => $this->value()
+            $this->name() => $_FILES[$this->name()]
         ));
 
         $validation->bind(":files", $_FILES[$this->name()]);
