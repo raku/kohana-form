@@ -53,12 +53,14 @@ class Base_ORM_Form extends Base_Form
     {
 
         $klass = get_called_class();
-
         $meta = $klass::meta();
-
         $this->_options = Arr::merge($this->_options, Arr::get($meta, "options"));
-
         $this->__fields = Arr::get($meta, "fields");
+
+        if ($this->__instance === NULL)
+            $this->__instance = Arr::get($this->_options, "model");
+
+        $relations = $this->__load_relations();
 
         if ($data instanceof ORM)
             $data = $data->as_array();
@@ -66,21 +68,29 @@ class Base_ORM_Form extends Base_Form
         $columns = Arr::get($this->_options, "model")->list_columns();
 
         if ($id !== NULL) {
+
             $this->__instance = Arr::get($this->_options, "model")
                 ->where(Arr::get($this->_options, "model")->primary_key(), "=", $id)
                 ->find();
             $iterated = array();
-
             foreach ($this->__instance->as_array() as $key => $value) {
+
                 $iterated[$key] = $value;
+
             }
             $data = Arr::merge($iterated, $data);
+
         }
 
         foreach ($columns as $column) {
-            $name = $column["column_name"];
 
-            $field = $this->__create_field($name, $column, $data);
+            $name = str_replace("_id", "", $column["column_name"]);
+
+            if (!isset($name, $relations)) {
+                $field = $this->__create_field($name, $column, $data);
+            } else {
+                $field = $this->__create_relation_field($name, $column, $data, $relations);
+            }
 
             $field->theme(Arr::get($this->_options, "theme"));
 
@@ -91,6 +101,7 @@ class Base_ORM_Form extends Base_Form
                 if (!in_array($name, Arr::get($this->_options, "except_fields")))
                     $this->add_field($field);
             }
+
         }
     }
 
@@ -102,6 +113,25 @@ class Base_ORM_Form extends Base_Form
      */
     private function __create_field($name, $column, $data)
     {
+        return Arr::get($this->__fields, $name, false) ?
+            Arr::get($this->__fields, $name)
+                ->name($name)
+                ->value(isset($data[$name]) ? $data[$name] : "")
+            :
+            Field::factory($this->__transform_value($column["data_type"]))
+                ->name($name)
+                ->value(isset($data[$name]) ? $data[$name] : "");
+    }
+
+    private function __create_relation_field($name, $column, $data, $relations)
+    {
+        $type = $relations[$name];
+
+        switch($type){
+            case "belongs_to":
+                
+        }
+
         return Arr::get($this->__fields, $name, false) ?
             Arr::get($this->__fields, $name)
                 ->name($name)
@@ -129,14 +159,28 @@ class Base_ORM_Form extends Base_Form
      */
     public function save()
     {
-        if ($this->__instance === NULL)
-            $this->__instance = Arr::get($this->_options, "model");
-
         foreach ($this->elements() as $element) {
             $this->__instance->{$element->name()} = $element->value();
         }
 
         $this->__instance->save();
+    }
+
+    private function  __load_relations()
+    {
+        $belongs_to = $this->__instance->belongs_to();
+        $has_many = $this->__instance->has_many();
+        $has_one = $this->__instance->has_one();
+
+        $result = array();
+
+        foreach (array("belongs_to", "has_many", "has_one") as $type) {
+            foreach ($$type as $key => $value) {
+                $result[$key] = $type;
+            }
+        }
+
+        return $result;
     }
 
 
