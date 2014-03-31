@@ -60,8 +60,6 @@ class Base_ORM_Form extends Base_Form
         if ($this->__instance === NULL)
             $this->__instance = Arr::get($this->_options, "model");
 
-        $relations = $this->__load_relations();
-
         if ($data instanceof ORM)
             $data = $data->as_array();
 
@@ -83,15 +81,9 @@ class Base_ORM_Form extends Base_Form
         }
 
         foreach ($columns as $column) {
-
             $name = str_replace("_id", "", $column["column_name"]);
 
-            if (!isset($name, $relations)) {
-                $field = $this->__create_field($name, $column, $data);
-            } else {
-                $field = $this->__create_relation_field($name, $column, $data, $relations);
-            }
-
+            $field = $this->__create_field($name, $column, $data);
             $field->theme(Arr::get($this->_options, "theme"));
 
             if (
@@ -113,25 +105,6 @@ class Base_ORM_Form extends Base_Form
      */
     private function __create_field($name, $column, $data)
     {
-        return Arr::get($this->__fields, $name, false) ?
-            Arr::get($this->__fields, $name)
-                ->name($name)
-                ->value(isset($data[$name]) ? $data[$name] : "")
-            :
-            Field::factory($this->__transform_value($column["data_type"]))
-                ->name($name)
-                ->value(isset($data[$name]) ? $data[$name] : "");
-    }
-
-    private function __create_relation_field($name, $column, $data, $relations)
-    {
-        $type = $relations[$name];
-
-        switch($type){
-            case "belongs_to":
-                
-        }
-
         return Arr::get($this->__fields, $name, false) ?
             Arr::get($this->__fields, $name)
                 ->name($name)
@@ -165,23 +138,4 @@ class Base_ORM_Form extends Base_Form
 
         $this->__instance->save();
     }
-
-    private function  __load_relations()
-    {
-        $belongs_to = $this->__instance->belongs_to();
-        $has_many = $this->__instance->has_many();
-        $has_one = $this->__instance->has_one();
-
-        $result = array();
-
-        foreach (array("belongs_to", "has_many", "has_one") as $type) {
-            foreach ($$type as $key => $value) {
-                $result[$key] = $type;
-            }
-        }
-
-        return $result;
-    }
-
-
 }
