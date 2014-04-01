@@ -39,4 +39,9 @@ class Field_BelongsTo extends Base_Field
 
         return $this;
     }
+
+    public function model()
+    {
+        return $this->_options["model"];
+    }
 } 

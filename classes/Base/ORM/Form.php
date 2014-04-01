@@ -54,7 +54,7 @@ class Base_ORM_Form extends Base_Form
      * @param null $id
      */
     public function __construct($data = array(), $id = NULL)
-    {   
+    {
         $klass = get_called_class();
         $meta = $klass::meta();
         $this->_options = Arr::merge($this->_options, Arr::get($meta, "options"));
@@ -64,7 +64,6 @@ class Base_ORM_Form extends Base_Form
             $this->__instance = Arr::get($this->_options, "model");
 
         $this->__relations = $this->__load_relations();
-
 
 
         if ($data instanceof ORM)
@@ -92,6 +91,7 @@ class Base_ORM_Form extends Base_Form
 
             $field = $this->__create_field($name, $column, $data);
 
+
             $field->theme(Arr::get($this->_options, "theme"));
 
             if (
@@ -103,6 +103,7 @@ class Base_ORM_Form extends Base_Form
             }
 
         }
+
     }
 
     /**
@@ -118,7 +119,7 @@ class Base_ORM_Form extends Base_Form
         return Arr::get($this->__fields, $unified_name, false) ?
             Arr::get($this->__fields, $unified_name)
                 ->name($unified_name)
-                ->value(isset($data[$unified_name]) ? $data[$unified_name] : "")
+                ->value(isset($data[$unified_name]) ? $data[$unified_name] : (isset($data[$name]) ? $data[$name] : ""))
             :
             Field::factory($this->__transform_value($column["data_type"]))
                 ->name($unified_name)
@@ -184,9 +185,11 @@ class Base_ORM_Form extends Base_Form
         $this->__instance->save();
     }
 
-    private function __write_belongs_to($element)
+    private function __write_belongs_to(Field_BelongsTo $element)
     {
-        $this->__instance->{$element->name()} = $element->value();
+        $this->__instance->{$element->name()} = $element->model()
+            ->where($element->model()->primary_key(), "=", $element->value())->find();
+
 
         return $this;
     }
