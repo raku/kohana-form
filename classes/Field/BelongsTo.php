@@ -32,7 +32,7 @@ class Field_BelongsTo extends Base_Field
                 "css_classes" => $this->css_class(),
                 "formset_index" => $this->formset_index(),
                 "theme" => $this->theme(),
-                "choices" => $this->_options["choices"]
+                "choices" => $this->choices()
             ));
 
         $this->_widget = $type;
@@ -40,8 +40,23 @@ class Field_BelongsTo extends Base_Field
         return $this;
     }
 
-    public function model()
+    public function model(ORM $model = NULL)
     {
-        return $this->_options["model"];
+        if ($model === NULL)
+            return $this->_options["model"];
+
+        $this->_options["model"] = $model;
+
+        return $this;
+    }
+
+    public function choices(array $choices = array())
+    {
+        if (empty($choices))
+            return $this->_options["choices"];
+
+        $this->_options["choices"] = $choices;
+
+        return $this;
     }
 } 

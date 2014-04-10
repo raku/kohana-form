@@ -26,10 +26,20 @@ class Field_Choice extends Base_Field
                 "css_classes" => $this->css_class(),
                 "formset_index" => $this->formset_index(),
                 "theme" => $this->theme(),
-                "choices" => $this->_options["choices"]
+                "choices" => $this->choices()
             ));
 
         $this->_widget = $type;
+
+        return $this;
+    }
+
+    public function choices(array $choices = array())
+    {
+        if (empty($choices))
+            return $this->_options["choices"];
+
+        $this->_options["choices"] = $choices;
 
         return $this;
     }
