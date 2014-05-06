@@ -183,6 +183,16 @@ abstract class Base_Form implements Iterator
         return $this;
     }
 
+    public function field($key)
+    {
+        foreach ($this->elements() as $field) {
+            if ($field->name() == $key)
+                return $field->name();
+            else
+                return NULL;
+        }
+    }
+
     /**
      * Show form on a page
      *

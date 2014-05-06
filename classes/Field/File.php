@@ -14,7 +14,6 @@ class Field_File extends Base_Field
 
     protected $_rules = array(
         "Upload::valid" => array(":value"),
-        "Upload::type" => array(':files', array('jpg', 'png', 'gif'))
     );
 
     public function __construct($options)
@@ -60,20 +59,13 @@ class Field_File extends Base_Field
     private function __process_file()
     {
 
-        $image = $_FILES[$this->name()];
+        $file = $_FILES[$this->name()];
 
-        if ($file = Upload::save($image, NULL, DOCROOT . $this->_upload_dir)) {
-            $filename = strtolower(Text::random('alnum', 20)) . '.jpg';
-
-            Image::factory($file)
-                ->save(DOCROOT . $this->_upload_dir . $filename);
-
-            // Delete the temporary file
-            unlink($file);
+        if ($file = Upload::save($file, NULL, DOCROOT . $this->_upload_dir)) {
 
             $this->__uploaded = true;
 
-            $this->__file_address = $this->_upload_dir . $filename;
+            $this->__file_address = $this->_upload_dir . $file;
 
             return true;
         }

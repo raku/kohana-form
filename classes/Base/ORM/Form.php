@@ -45,8 +45,19 @@ class Base_ORM_Form extends Base_Form
      */
     private $__fields = array();
 
+    /**
+     * @var array|mixed
+     */
+    private $__m2m_fields = array();
+
+    /**
+     * @var string
+     */
     protected $_relation_postfix = "_id";
 
+    /**
+     * @var array
+     */
     private $__relations = array();
 
     /**
@@ -59,6 +70,7 @@ class Base_ORM_Form extends Base_Form
         $meta = $klass::meta();
         $this->_options = Arr::merge($this->_options, Arr::get($meta, "options"));
         $this->__fields = Arr::get($meta, "fields");
+        $this->__2m_fields = Arr::get($meta, "2m_fields", array());
 
         if ($this->__instance === NULL)
             $this->__instance = Arr::get($this->_options, "model");
@@ -104,6 +116,18 @@ class Base_ORM_Form extends Base_Form
 
         }
 
+        $this->__load_2m();
+
+    }
+
+    public function relations($value = NULL)
+    {
+        if ($value === NULL)
+            return $this->__relations;
+
+        $this->__relations = $value;
+
+        return $this;
     }
 
     /**
@@ -139,11 +163,18 @@ class Base_ORM_Form extends Base_Form
             ));
     }
 
+    /**
+     * @param $key
+     * @return mixed
+     */
     private function __relation_type($key)
     {
         return Arr::get($this->__relations, $key, NULL);
     }
 
+    /**
+     * @return array
+     */
     private function  __load_relations()
     {
         $belongs_to = $this->__instance->belongs_to();
@@ -185,6 +216,10 @@ class Base_ORM_Form extends Base_Form
         $this->__instance->save();
     }
 
+    /**
+     * @param Field_BelongsTo $element
+     * @return $this
+     */
     private function __write_belongs_to(Field_BelongsTo $element)
     {
         $this->__instance->{$element->name()} = $element->model()
@@ -192,5 +227,21 @@ class Base_ORM_Form extends Base_Form
 
 
         return $this;
+    }
+
+    /**
+     *
+     */
+    private function __load_2m()
+    {
+        foreach ($this->__2m_fields as $name => $field) {
+            $field->theme(Arr::get($this->_options, "theme"));
+            $field->name($name);
+            $this->add_field($field);
+
+            $this->__relations[$name] = "";
+        }
+
+        print_r($this->relations());
     }
 }
