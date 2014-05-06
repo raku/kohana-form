@@ -58,14 +58,13 @@ class Field_File extends Base_Field
 
     private function __process_file()
     {
-
         $file = $_FILES[$this->name()];
 
         if ($file = Upload::save($file, NULL, DOCROOT . $this->_upload_dir)) {
 
             $this->__uploaded = true;
-
-            $this->__file_address = $this->_upload_dir . $file;
+            $file = str_replace(DOCROOT, "", $file);
+            $this->__file_address = $file;
 
             return true;
         }
