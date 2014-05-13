@@ -48,7 +48,7 @@ class Base_ORM_Form extends Base_Form
     /**
      * @var array|mixed
      */
-    private $__m2m_fields = array();
+    private $__2m_fields = array();
 
     /**
      * @var string
@@ -116,10 +116,14 @@ class Base_ORM_Form extends Base_Form
 
         }
 
-        $this->__load_2m();
+        $this->__load_2m($data);
 
     }
 
+    /**
+     * @param null $value
+     * @return $this|array
+     */
     public function relations($value = NULL)
     {
         if ($value === NULL)
@@ -197,10 +201,10 @@ class Base_ORM_Form extends Base_Form
      */
     public function save()
     {
-
         foreach ($this->elements() as $element) {
 
             $type = $this->__relation_type($element->name());
+
 
             switch ($type) {
                 case NULL:
@@ -214,6 +218,8 @@ class Base_ORM_Form extends Base_Form
         }
 
         $this->__instance->save();
+
+        $this->_save_2m();
     }
 
     /**
@@ -225,23 +231,93 @@ class Base_ORM_Form extends Base_Form
         $this->__instance->{$element->name()} = $element->model()
             ->where($element->model()->primary_key(), "=", $element->value())->find();
 
-
         return $this;
     }
 
     /**
      *
      */
-    private function __load_2m()
+    private function __load_2m($data = array())
     {
         foreach ($this->__2m_fields as $name => $field) {
             $field->theme(Arr::get($this->_options, "theme"));
             $field->name($name);
-            $this->add_field($field);
 
-            $this->__relations[$name] = "";
+            foreach ($this->__instance->{$name}->find_all() as $object) {
+                $data["loaded"][$name][] = $object->pk();
+            }
+
+            if (isset($data["loaded"][$name])) {
+                $field->value($data["loaded"][$name]);
+            }
+
+            if (isset($data[$name]))
+                $field->value($data[$name]);
+
+            $this->add_field($field);
+        }
+    }
+
+    /**
+     *
+     */
+    protected function _save_2m()
+    {
+        foreach ($this->elements() as $element) {
+
+            $type = $this->__relation_type($element->name());
+
+            $many_to_many = !is_null(Arr::get(Arr::get($this->__instance->has_many(), $element->name()), "through"));
+
+
+            switch ($type) {
+                case NULL:
+                    break;
+                case "has_many":
+                    if (!$many_to_many)
+                        $this->__write_has_many($element);
+                    else
+                        $this->__write_many_2_many($element);
+                    break;
+            }
+
+        }
+    }
+
+    /**
+     * @param $element
+     * @return $this
+     */
+    private function __write_has_many($element)
+    {
+        foreach ($element->value() as $id) {
+            foreach ($element
+                         ->model()->clear()
+                         ->where($element->model()->primary_key(), "=", $id) as $object) {
+                $object->{$this->name()} = NULL;
+                $object->save();
+            }
+            $element
+                ->model()->clear()
+                ->where($element->model()->primary_key(), "=", $id)
+                ->find()
+                ->{$this->name()} = $this->__instance;
+            $element->model()->save();
         }
 
-        print_r($this->relations());
+        return $this;
+    }
+
+    private function __write_many_2_many($element)
+    {
+        foreach ($this->__instance->{$element->name()}->find_all() as $object) {
+            $this->__instance->remove($element->name(), $object);
+        }
+        foreach ($element->value() as $id) {
+            $this->__instance->add($element->name(), $element->model()->clear()
+                ->where($element->model()->primary_key(), "=", $id)->find());
+        }
+
+        return $this;
     }
 }

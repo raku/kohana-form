@@ -67,7 +67,7 @@ abstract class Base_Form implements Iterator
      * Return form fields
      * @return array
      */
-    protected function elements()
+    public function elements()
     {
         return $this->__elements;
     }

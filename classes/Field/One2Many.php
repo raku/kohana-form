@@ -4,4 +4,61 @@ defined('SYSPATH') or die('No direct script access.');
 class Field_One2Many extends Base_Field
 {
     protected $_widget = "MultiSelect";
+
+    protected $_value = array();
+
+    public function __construct($options)
+    {
+        if (!isset($options["model"]))
+            throw new Kohana_Exception("You should define a model into a factory for One2Many field");
+
+        $list = $options["model"]->find_all();
+
+        $choices = array();
+
+        foreach ($list as $instance) {
+            $choices[$instance->pk()] = (string)$instance;
+        }
+
+        $options["choices"] = $choices;
+
+        $this->_options = Arr::merge($this->_options, $options);
+    }
+
+    public function widget($type = NULL)
+    {
+        if ($type === NULL)
+            return Widget::factory($this->_widget, array(
+                "value" => $this->value(),
+                "name" => $this->name(),
+                "css_classes" => $this->css_class(),
+                "formset_index" => $this->formset_index(),
+                "theme" => $this->theme(),
+                "choices" => $this->choices()
+            ));
+
+        $this->_widget = $type;
+
+        return $this;
+    }
+
+    public function model(ORM $model = NULL)
+    {
+        if ($model === NULL)
+            return $this->_options["model"];
+
+        $this->_options["model"] = $model;
+
+        return $this;
+    }
+
+    public function choices(array $choices = array())
+    {
+        if (empty($choices))
+            return $this->_options["choices"];
+
+        $this->_options["choices"] = $choices;
+
+        return $this;
+    }
 } 
