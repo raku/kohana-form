@@ -35,11 +35,18 @@ class Form_Login extends Form
 Имеющиеся типы полей:
 
 <ul>
-	<li> Email</li>
+<li> Email</li>
+<li> Belongs To</li>
+<li> Many2Many</li>
+<li> One2Many</li>
+<li> Choice</li>
+<li> MultiChoice</li>
 <li> Hidden </li>
 <li> Image</li>
+<li> File</li>
 <li> Int </li>
 <li> Password </li>
+<li> URL </li>
 <li> Text </li>
 <li> Timestamp</li>
 <li> Varchar </li>
