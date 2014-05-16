@@ -217,7 +217,11 @@ class Base_ORM_Form extends Base_Form
 
         }
 
-        $this->__instance->save();
+        try {
+            $this->__instance->save();
+        } catch (Exception $e) {
+
+        }
 
         $this->_save_2m();
     }
