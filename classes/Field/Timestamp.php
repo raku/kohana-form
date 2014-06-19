@@ -7,6 +7,6 @@ class Field_Timestamp extends Base_Field
 
     protected $_rules = array(
         "not_empty" => NULL,
-        "date"
+        "date" => NULL
     );
 } 
