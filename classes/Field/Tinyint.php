@@ -1,11 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: roman
- * Date: 11.06.14
- * Time: 14:58
- */
+defined('SYSPATH') or die('No direct script access.');
 
-class Field_Tinyint {
+class Field_Tinyint extends Base_Field
+{
+    protected $_widget = "TextInput";
 
-} 
+    protected $_rules = array(
+        "not_empty" => NULL
+    );
+}

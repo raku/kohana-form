@@ -10,42 +10,48 @@
  *
  *
  */
-abstract class Base_Form implements Iterator
+abstract class Base_Form extends Kohana_Form implements Iterator
 {
 
     /**
      * Storing form fields
      * @var array
      */
-    private $__elements = array();
+    private
+        $__elements = array();
 
     /**
      * @var int
      */
-    private $__position = 0;
+    private
+        $__position = 0;
     /**
      * Storing validation errors
      *
      * @var array
      */
-    private $__errors = array();
+    private
+        $__errors = array();
 
     /**
      * Flag which says, should we add formset index to field name
      *
      * @var bool
      */
-    private $__is_formset_element = false;
+    private
+        $__is_formset_element = false;
 
     /**
      * @var int
      */
-    private $__number = 0;
+    private
+        $__number = 0;
 
     /**
      * @var array
      */
-    protected $_options = array(
+    protected
+        $_options = array(
         "valid_messages_file" => "",
         "theme" => "base"
     );
@@ -56,7 +62,8 @@ abstract class Base_Form implements Iterator
      * @param null $id
      * @return mixed
      */
-    public static function factory($classname, $data = NULL, $id = NULL)
+    public
+    static function factory($classname, $data = NULL, $id = NULL)
     {
         $class = "Form_" . $classname;
 
