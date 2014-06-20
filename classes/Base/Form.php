@@ -97,6 +97,8 @@ abstract class Base_Form extends Kohana_Form implements Iterator
             if ($data !== NULL) {
                 if (isset($data[$name])) {
                     $field->value($data[$name]);
+                } else {
+                    $field->value(NULL);
                 }
             }
 
