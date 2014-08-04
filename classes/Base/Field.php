@@ -206,6 +206,16 @@ abstract class Base_Field
         return $this;
     }
 
+    public function rules($rules = NULL)
+    {
+        if ($rules === NULL)
+            return $this->_rules;
+
+        $this->_rules = $rules;
+
+        return $this;
+    }
+
     /**
      * @param null $string
      * @return $this|string
